@@ -1,8 +1,10 @@
 package Entitati;
 
 import Exceptii.ExceptieGariPermise;
+import Utile.ScrieAudit;
 import Utile.UtileRuta;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Ruta {
@@ -15,6 +17,12 @@ public class Ruta {
     public Ruta(List<Gara> destinatii, int oraPlecare, int oraSosire) {
         this.idRuta = UtileRuta.idCurent;
         UtileRuta.idCurent++;
+        this.destinatii = destinatii;
+        this.oraPlecare = oraPlecare;
+        this.oraSosire = oraSosire;
+    }
+    public Ruta(List<Gara> destinatii, int oraPlecare, int oraSosire, int idRuta) {
+        this.idRuta = idRuta;
         this.destinatii = destinatii;
         this.oraPlecare = oraPlecare;
         this.oraSosire = oraSosire;
@@ -64,6 +72,7 @@ public class Ruta {
         }
         this.tren = tren;
         tren.setEsteFolosit(true);
+        ScrieAudit.scrieFisier("asignat tren la o ruta valida", LocalDateTime.now());
     }
 
     @Override
@@ -74,5 +83,12 @@ public class Ruta {
         }
         ret += "\n" + this.oraPlecare + "-" + this.oraSosire + "\n";
         return ret;
+    }
+
+    public int getIdRuta() {
+        return idRuta;
+    }
+    public void stergeDestintatie(Gara g){
+        destinatii.remove(g);
     }
 }

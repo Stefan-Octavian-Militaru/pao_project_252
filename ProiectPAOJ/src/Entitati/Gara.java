@@ -1,5 +1,9 @@
 package Entitati;
 
+import Utile.ScrieAudit;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class Gara {
@@ -37,9 +41,11 @@ public class Gara {
          for(int i = 0; i < nrLinii; i++){
              if(orarLinii[i][ora] == null){
                  orarLinii[i][ora] = ruta;
+                 ScrieAudit.scrieFisier("locomotiva adaugata la orar", LocalDateTime.now());
                  break;
              }
          }
+
     }
     public boolean verificaOra(int ora){
         for(int i = 0; i < nrLinii; i++){

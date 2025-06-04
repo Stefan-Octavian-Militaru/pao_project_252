@@ -42,25 +42,12 @@ public class Operator {
         this.taraProvenienta = taraProvenienta;
     }
 
-    public void formeazaTren(Locomotiva locomotiva, List<Vagon> vagoane, Mecanic mecanic){
-        if(locomotiva.getStare() == Stare.DEZAFECTATA){
-            System.out.println("Locomotiva nu poate fi pusa in operatie!");
-        }
-        else{
-            Tren t = new Tren(locomotiva, vagoane, this, mecanic);
-            trenuri.add(t);
-        }
-    }
-
     public List<Gara> getGariPermise() {
         return gariPermise;
     }
 
     public void setGariPermise(List<Gara> gariPermise) {
         this.gariPermise = gariPermise;
-    }
-    public Tren getTren(int index){
-        return trenuri.get(index);
     }
     public void listGariPermise(){
         for(Gara g : gariPermise){

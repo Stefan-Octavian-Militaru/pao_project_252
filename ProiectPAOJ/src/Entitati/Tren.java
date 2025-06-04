@@ -1,32 +1,37 @@
 package Entitati;
 
+import Exceptii.ExceptieGreutateVagoane;
+import Utile.ScrieAudit;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Tren {
     private Locomotiva locomotiva;
-    private List<Vagon> Vagoane;
+    private List<Vagon> vagoane;
     private Operator operator;
     private Mecanic mecanic;
     private boolean esteFolosit = false;
+    private int idTren;
 
-    public Tren(Locomotiva locomotiva, List<Vagon> vagoane, Operator operator, Mecanic mecanic) {
-        this.locomotiva = locomotiva;
+    public Tren(int idTren, Locomotiva locomotiva, List<Vagon> vagoane, Operator operator, Mecanic mecanic) {
         int greutateTotala = 0;
         for (Vagon v : vagoane) {
             greutateTotala += v.getGreutate();
         }
         if(greutateTotala <= locomotiva.getCapacitate())
-            Vagoane = vagoane;
+            this.vagoane = vagoane;
         else {
-            Vagoane = null;
-            System.out.println("Vagoanele depasesc greutatea admisa de locomotiva!");
+            throw new ExceptieGreutateVagoane();
         }
+        this.locomotiva = locomotiva;
         this.operator = operator;
         this.mecanic = mecanic;
         locomotiva.setEsteFolosita(true);
         vagoane.forEach(v -> v.setEsteFolosit(true));
         mecanic.setEsteFolosit(true);
         this.esteFolosit = false;
+        ScrieAudit.scrieFisier("format tren", LocalDateTime.now());
     }
 
     public boolean isEsteFolosit() {
@@ -46,11 +51,11 @@ public class Tren {
     }
 
     public List<Vagon> getVagoane() {
-        return Vagoane;
+        return vagoane;
     }
 
     public void setVagoane(List<Vagon> vagoane) {
-        Vagoane = vagoane;
+        this.vagoane = vagoane;
     }
 
     public Operator getOperator() {
@@ -69,13 +74,18 @@ public class Tren {
         this.mecanic = mecanic;
     }
 
+    public int getIdTren() {
+        return idTren;
+    }
+
     @Override
     public String toString() {
         return "Tren{" +
                 "locomotiva=" + locomotiva +
-                ", Vagoane=" + Vagoane +
+                ", Vagoane=" + vagoane +
                 ", operator=" + operator +
                 ", mecanic=" + mecanic +
+                ", id =" + idTren +
                 '}';
     }
 }

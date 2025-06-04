@@ -1,7 +1,9 @@
 package Entitati;
 
 import Utile.NivelExperienta;
+import Utile.ScrieAudit;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import java.time.LocalDate;
@@ -23,12 +25,14 @@ public class Mecanic {
     private NivelExperienta calculeazaNivelExperienta(){
         LocalDate dataCurenta = LocalDate.now();
         int aniExperienta = dataCurenta.getYear() - dataAngajarii.getYear();
+        ScrieAudit.scrieFisier("calculat nivel de experienta mecanic", LocalDateTime.now());
         if (aniExperienta < 10){
             return NivelExperienta.INCEPATOR;
         }
         if(aniExperienta < 20){
             return NivelExperienta.EXPERIMENTAT;
         }
+
         return NivelExperienta.VETERAN;
     }
 

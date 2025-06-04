@@ -2,6 +2,7 @@ package Utile;
 
 import Entitati.*;
 import Exceptii.ExceptieGaraLipsa;
+import Exceptii.ExceptieGreutateVagoane;
 import Repozitorii.*;
 import Servicii.ServiciuClient;
 import Servicii.ServiciuRuta;
@@ -9,14 +10,15 @@ import Servicii.ServiciuRuta;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Menu {
-    public static void arataOptiuni() throws IOException {
-        System.out.println("INTRODUCETI NUMELE UNEIA DINTRE URMATOARELE OPTIUNI:\nAFISARE | PROGRAMARE | CAUTARE RUTA | ADAUGARE | IESIRE\n");
+    public static void arataOptiuni() throws IOException, SQLException {
+        System.out.println("INTRODUCETI NUMELE UNEIA DINTRE URMATOARELE OPTIUNI:\nAFISARE | PROGRAMARE | CAUTARE RUTA | ADAUGARE | EDITARE | STERGERE | IESIRE\n");
         BufferedReader cititor = new BufferedReader(new InputStreamReader(System.in));
         String optiune = cititor.readLine().toUpperCase();
         switch (optiune) {
@@ -36,6 +38,13 @@ public class Menu {
                 adaugaDate();
                 arataOptiuni();
                 break;
+            case "EDITARE":
+                editeazaDate();
+                arataOptiuni();
+                break;
+            case "STERGERE":
+                stergeDate();
+                arataOptiuni();
             case "IESIRE":
                 break;
             default:
@@ -46,7 +55,7 @@ public class Menu {
 
     }
     public static void afisariDate() throws IOException {
-        System.out.println("ALEGETI CE VRETI SA AFISATI:\nGARI | LOCOMOTIVE | MECANICI | OPERATORI | RUTE | VAGOANE | PROGRAM GARA\n");
+        System.out.println("ALEGETI CE VRETI SA AFISATI:\nGARI | LOCOMOTIVE | MECANICI | OPERATORI | RUTE | VAGOANE | PROGRAM GARA | TRENURI\n");
         BufferedReader cititor = new BufferedReader(new InputStreamReader(System.in));
         String optiune = cititor.readLine().toUpperCase();
         switch (optiune) {
@@ -70,6 +79,9 @@ public class Menu {
                 break;
             case "PROGRAM GARA":
                 afisariProgramGara();
+                break;
+            case "TRENURI":
+                TrenuriRepo.afiseaza();
                 break;
             default:
                 System.out.println("OPTIUNE INVALIDA, INCERCATI DIN NOU!\n");
@@ -98,7 +110,7 @@ public class Menu {
             cautaRuta();
         }
     }
-    public static void programeazaRuta() throws IOException {
+    public static void programeazaRuta() throws IOException, SQLException {
         System.out.println("INTRODUCETI GARILE PRIN CARE DORITI SA TREACA RUTA, SEPARATE PRINTR-UN SINGUR SPATIU\n");
         BufferedReader cititor = new BufferedReader(new InputStreamReader(System.in));
         String optiuni = cititor.readLine();
@@ -123,15 +135,16 @@ public class Menu {
         ServiciuRuta.adaugaRutaLaOrar(r, ore);
         System.out.println("SELECTATI UN TREN DISPONIBIL (INTRODUCETI NUMARUL DIN FATA ACESTUIA):\n");
         int contor = 0;
-        List <Tren> trenuriDisponibile = OperatoriRepo.getTrenuriDisponibile();
+        List <Tren> trenuriDisponibile = TrenuriRepo.getTrenuriDisponibile();
         for(Tren t : trenuriDisponibile) {
             System.out.println((contor++) + ". " + t);
         }
         optiuni = cititor.readLine();
         r.setTren(trenuriDisponibile.get(Integer.parseInt(optiuni)));
         RuteRepo.addRuta(r);
+
     }
-    public static void adaugaDate() throws IOException {
+    public static void adaugaDate() throws IOException, SQLException {
         System.out.println("ALEGETI CE VRETI SA ADAUGATI IN BAZA DE DATE A APLICATIEI\nGARI | LOCOMOTIVE | MECANICI | OPERATORI | VAGOANE | TRENURI\n");
         BufferedReader cititor = new BufferedReader(new InputStreamReader(System.in));
         String optiune = cititor.readLine().toUpperCase();
@@ -160,7 +173,7 @@ public class Menu {
                 break;
         }
     }
-    public static void formeazaTren() throws IOException {
+    public static void formeazaTren() throws IOException, SQLException {
         System.out.println("SELECTATI UN OPERATOR\n");
         OperatoriRepo.afiseaza();
         BufferedReader cititor = new BufferedReader(new InputStreamReader(System.in));
@@ -175,7 +188,7 @@ public class Menu {
                 System.out.println((contor++) + ". " + l);
         }
         optiune = cititor.readLine();
-        Locomotiva l = LocomotiveRepo.getLocomotiva(Integer.parseInt(optiune));
+        Locomotiva l = LocomotiveRepo.getLocomotivaByIndex(Integer.parseInt(optiune));
         System.out.println("SELECTATI UNUL SAU MAI MULTE VAGOANE DIN LISTA (INTRODUCETI NUMERELE CORESPUNZATOARE SEPARATE PRINTR-UN SINGUR SPATIU)\n");
         contor = 0;
         for(Vagon v : VagoaneRepo.getVagoane()){
@@ -196,7 +209,58 @@ public class Menu {
         if(MecaniciRepo.getMecanic(optiune) == null)
             throw new Exceptii.ExceptieInput();
         Mecanic m = MecaniciRepo.getMecanic(optiune);
-        op.formeazaTren(l, vlist, m);
-        System.out.println("TRENUL A FOST FORMAT CU SUCCES!\n");
+        try {
+            TrenuriRepo.formeazaTren(op, l, vlist, m);
+            System.out.println("TRENUL A FOST FORMAT CU SUCCES!\n");
+        }
+        catch (ExceptieGreutateVagoane e){
+            System.out.println(e.getMessage());
+        }
+    }
+    public static void editeazaDate() throws IOException, SQLException {
+        System.out.println("ALEGETI CE VRETI SA EDITATI IN BAZA DE DATE A APLICATIEI\nGARI | LOCOMOTIVE | MECANICI | OPERATORI\n");
+        BufferedReader cititor = new BufferedReader(new InputStreamReader(System.in));
+        String optiune = cititor.readLine().toUpperCase();
+        switch (optiune) {
+            case "GARI":
+                GariRepo.editeaza();
+                break;
+            case "LOCOMOTIVE":
+                LocomotiveRepo.editeaza();
+                break;
+            case "MECANICI":
+                MecaniciRepo.editeaza();
+                break;
+            case "OPERATORI":
+                OperatoriRepo.editeaza();
+                break;
+            default:
+                System.out.println("OPTIUNE INVALIDA, INCERCATI DIN NOU!\n");
+                editeazaDate();
+                break;
+        }
+    }
+    public static void stergeDate() throws IOException, SQLException {
+        System.out.println("ALEGETI CE VRETI SA STERGETI:\nGARI | LOCOMOTIVE | MECANICI | OPERATORI\n");
+        BufferedReader cititor = new BufferedReader(new InputStreamReader(System.in));
+        String optiune = cititor.readLine().toUpperCase();
+        switch (optiune) {
+            case "GARI":
+                GariRepo.sterge();
+                break;
+            case "LOCOMOTIVE":
+                LocomotiveRepo.sterge();
+                break;
+            case "MECANICI":
+                MecaniciRepo.sterge();
+                break;
+            case "OPERATORI":
+                OperatoriRepo.sterge();
+                break;
+            default:
+                System.out.println("OPTIUNE INVALIDA, INCERCATI DIN NOU!\n");
+                afisariDate();
+                break;
+        }
     }
 }

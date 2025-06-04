@@ -5,7 +5,10 @@ import Entitati.Ruta;
 import Entitati.Tren;
 import Repozitorii.RuteRepo;
 import Utile.NivelExperienta;
+import Utile.ScrieAudit;
 import Utile.Stare;
+
+import java.time.LocalDateTime;
 
 public class ServiciuClient {
     public static int calculeazaBilet(Ruta r){
@@ -32,9 +35,11 @@ public class ServiciuClient {
                 break;
         }
         cost -= (200 - r.getTren().getLocomotiva().getVitezaMedie()) / 4;
+        ScrieAudit.scrieFisier("calculat pret bilet", LocalDateTime.now());
         return cost;
     }
     public static Ruta gasesteRuta(String garaPlecare, String garaSosire){
+        ScrieAudit.scrieFisier("ruta cautata in baza de date", LocalDateTime.now());
         for(Ruta r : RuteRepo.getRute()){
             boolean gasitPlecare = false;
             for(Gara g : r.getDestinatii()){
@@ -55,6 +60,7 @@ public class ServiciuClient {
         return null;
     }
     public static Ruta gasesteRutaFiltru(String garaPlecare, String garaSosire, NivelExperienta nivelMecanic, Stare stareLocomotiva){
+        ScrieAudit.scrieFisier("ruta cautata in baza de date cu filtru", LocalDateTime.now());
         for(Ruta r : RuteRepo.getRute()){
             boolean gasitPlecare = false;
             Tren tren = r.getTren();
