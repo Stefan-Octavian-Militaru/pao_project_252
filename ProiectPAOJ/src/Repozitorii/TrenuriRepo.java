@@ -74,11 +74,19 @@ public class TrenuriRepo {
                 for (Vagon v : vagoane) {
                     String insertCommand;
                     if (v.getTip() == 0)
-                        insertCommand = "UPDATE proiectpaoj.vagoanecalatori SET esteFolosit = 1, tren = " + Integer.toString(t.getIdTren()) + "WHERE nume = ?";
+                        insertCommand = "UPDATE proiectpaoj.vagoanecalatori SET esteFolosit = 1 WHERE idVagon = ?";
                     else
-                        insertCommand = "UPDATE proiectpaoj.vagoanemarfa SET esteFolosit = 1, tren = " + Integer.toString(t.getIdTren()) + "WHERE nume = ?";
+                        insertCommand = "UPDATE proiectpaoj.vagoanemarfa SET esteFolosit = 1 WHERE idVagon = ?";
                     prepStatement = databaseConfiguration.getDatabaseConnection().prepareStatement(insertCommand);
                     prepStatement.setInt(1, v.getIdVagon());
+                    prepStatement.executeUpdate();
+                    if (v.getTip() == 0)
+                        insertCommand = "UPDATE proiectpaoj.vagoanecalatori SET tren = ? WHERE idVagon = ?";
+                    else
+                        insertCommand = "UPDATE proiectpaoj.vagoanemarfa SET tren = ? WHERE idVagon = ?";
+                    prepStatement = databaseConfiguration.getDatabaseConnection().prepareStatement(insertCommand);
+                    prepStatement.setInt(1, t.getIdTren());
+                    prepStatement.setInt(2, v.getIdVagon());
                     prepStatement.executeUpdate();
                 }
             }

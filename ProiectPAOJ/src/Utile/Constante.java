@@ -20,7 +20,7 @@ public class Constante {
     public static final String INSERT_VAGOANE_CALATORI = "INSERT INTO proiectpaoj.vagoanecalatori(capacitate, locuriOcupate, greutate, esteFolosit) VALUES (?, ?, ?, ?)";
     public static final String INSERT_VAGOANE_MARFA = "INSERT INTO proiectpaoj.vagoanemarfa(greutate, esteFolosit, tipMarfa) VALUES (?, ?, ?)";
     public static final String QUERY_GET_RUTA_ID = "SELECT max(idRuta) FROM proiectpaoj.rute";
-    public static final String QUERY_GET_GARI_FOR_RUTE = "SELECT numeGara, ora FROM rute_gari WHERE idRuta =";
+    public static final String QUERY_GET_GARI_FOR_RUTE = "SELECT numeGara, ora FROM rutegari WHERE idRuta =";
     public static final String INSERT_TRENURI = "INSERT INTO proiectpaoj.trenuri (idTren, locomotiva, mecanic, operator, esteFolosit) VALUES (? , ? , ?, ?, ?)";
     public static final String QUERY_GET_TREN_ID = "SELECT max(idTren) FROM proiectpaoj.trenuri";
     public static final String QUERY_GET_TRENURI = "SELECT * FROM proiectpaoj.trenuri";

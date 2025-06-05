@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 
 public class ServiciuClient {
     public static int calculeazaBilet(Ruta r){
+        ScrieAudit.scrieFisier("calculat pretul unui bilet", LocalDateTime.now());
         int cost = 40;
         cost += (r.getDestinatii().size() - 2) * 10;
         Stare stareLocomotiva = r.getTren().getLocomotiva().getStare();

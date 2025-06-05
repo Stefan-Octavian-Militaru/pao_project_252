@@ -25,5 +25,8 @@ public class AdaugaDB {
             binder.bind(preparedStatement, object);
             preparedStatement.executeUpdate();
         }
+        catch (SQLIntegrityConstraintViolationException e){
+            System.out.println("EXISTA DEJA UN OBIECT CU ACEASTA CHEIE PRIMARA\n");
+        }
     }
 }
